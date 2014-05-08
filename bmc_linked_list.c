@@ -6,6 +6,7 @@
 bmc_linked_list_node * add_at_head(bmc_linked_list *list, void *data, int size); 
 bmc_linked_list_node * add_at_tail(bmc_linked_list *list, void *data, int size); 
 bmc_linked_list_node * new_node(void *data, int size); 
+void free_node(bmc_linked_list_node *node);
 
 bmc_linked_list * bmc_linked_list_new() {
 	bmc_linked_list *list = malloc(sizeof(bmc_linked_list));
@@ -21,7 +22,6 @@ bmc_linked_list_node * bmc_linked_list_add(bmc_linked_list *list, void *data, in
 }
 
 bmc_linked_list_node * bmc_linked_list_insert(bmc_linked_list *list, void *data, int size, int position) {
-
 	/* Add at tail */
 	if(position >= list->count) {
 		return add_at_tail(list, data, size);
@@ -38,7 +38,6 @@ bmc_linked_list_node * bmc_linked_list_insert(bmc_linked_list *list, void *data,
 		node = node->next;	
 	}	
 
-	newNode->data = data;
 	newNode->next = node->next;
 	node->next = newNode;
 
@@ -47,20 +46,54 @@ bmc_linked_list_node * bmc_linked_list_insert(bmc_linked_list *list, void *data,
 	return node;
 }
 
-void * bmc_linked_list_find(bmc_linked_list *list, void *data) {
+bmc_linked_list_node * bmc_linked_list_at(bmc_linked_list *list, int index) {
+	bmc_linked_list_node *node = NULL;
 
-	bmc_linked_list_node *node = list->head;
-	while(node != NULL) {
-		if(node->data == data) {
-			return node->data;
-		}
-		node = node->next;
+	if(index >= list->count || index < 0) {
+		return NULL;
 	}
 
-	return NULL;
+	node = list->head;
+	for(int i = 0; i < index; i++) {
+		node = node->next;	
+	}
+
+	return node;
 }
 
-void * bmc_linked_list_remove(bmc_linked_list *list, void *data) {
+int bmc_linked_list_find(bmc_linked_list *list, void *data) {
+	int index = 0;
+	bmc_linked_list_node *node = list->head;
+	while(node != NULL) {
+		if(memcmp(node->data, data, node->size) == 0) {
+			return index;	
+		}
+		node = node->next;
+		index++;
+	}
+
+	return -1;
+}
+
+int bmc_linked_list_remove(bmc_linked_list *list, int index) {
+	if(index >= list->count || index < 0) {
+		return -1;
+	}
+
+	bmc_linked_list_node *node = NULL;
+	if(index == 0) {
+		node = list->head;
+		list->head = node->next;
+		free_node(node);
+		return 0;
+	}
+
+	node = bmc_linked_list_at(list, index - 1);
+	bmc_linked_list_node *next_node = node->next;
+	node->next = next_node->next;
+	free_node(next_node);
+	list->count--;
+
 	return 0;
 }
 
@@ -73,8 +106,7 @@ void bmc_linked_list_free(bmc_linked_list *list) {
 	bmc_linked_list_node *node = list->head;
 	while(node) {
 		bmc_linked_list_node *next = node->next;
-		free(node->data);
-		free(node);
+		free_node(node);
 		node = next;
 	}
 
@@ -85,12 +117,17 @@ void bmc_linked_list_free(bmc_linked_list *list) {
 
 /* Private functions */
 
+void free_node(bmc_linked_list_node *node) {
+	free(node->data);
+	free(node);
+}
+
 bmc_linked_list_node * new_node(void *data, int size) {
 	bmc_linked_list_node *node = malloc(sizeof(bmc_linked_list_node));
 	node->next = NULL;
 	node->size = size;
 	node->data = malloc(size);
-	bzero(node->data, size);
+	memset(node->data, '\0', size);
 	memcpy(node->data, data, size);
 
 	return node;
@@ -108,6 +145,7 @@ bmc_linked_list_node * add_at_head(bmc_linked_list *list, void *data, int size) 
 		list->head = node;
 	}		
 
+	list->count++;
 	return node;
 }
 
@@ -122,5 +160,6 @@ bmc_linked_list_node * add_at_tail(bmc_linked_list *list, void *data, int size) 
 		list->tail = newNode;
 	}
 
+	list->count++;
 	return newNode;
 }
