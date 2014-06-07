@@ -7,6 +7,7 @@ bmc_ll_node * add_at_head(bmc_ll *list, void *data, int size);
 bmc_ll_node * add_at_tail(bmc_ll *list, void *data, int size); 
 bmc_ll_node * new_node(void *data, int size); 
 void free_node(bmc_ll_node *node);
+bmc_ll_node * copy_node(bmc_ll_node *);
 
 bmc_ll * bmc_ll_new() {
 	bmc_ll *list = malloc(sizeof(bmc_ll));
@@ -142,6 +143,34 @@ int bmc_ll_remove(bmc_ll *list, int index) {
 	return 0;
 }
 
+bmc_ll_node *bmc_ll_remove_last(bmc_ll *list) {
+	if(list->head == NULL) return NULL;
+	
+	bmc_ll_node *node = list->tail;
+	if(list->head == list->tail) {
+		list->head = list->tail = NULL;
+	}
+	else {
+		bmc_ll_node *temp = bmc_ll_at(list, list->count - 2);
+		temp->next = NULL;
+		list->tail = temp;
+	}
+
+	list->count--;
+
+	return node;
+}
+
+bmc_ll_node * bmc_ll_remove_first(bmc_ll *list) {
+	if(list->head == NULL) return NULL;
+	bmc_ll_node *node = list->head;
+	list->head = node->next;
+	
+	list->count--;
+	
+	return node;
+}
+
 void bmc_ll_free(bmc_ll *list) {
 	if(list->head == NULL) {
 		free(list);
@@ -176,6 +205,11 @@ bmc_ll_node * new_node(void *data, int size) {
 	memcpy(node->data, data, size);
 
 	return node;
+}
+
+bmc_ll_node * copy_node(bmc_ll_node *node) {
+	bmc_ll_node *n = new_node(node->data, node->size);
+	return n;
 }
 
 bmc_ll_node * add_at_head(bmc_ll *list, void *data, int size) {

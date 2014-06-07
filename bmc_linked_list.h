@@ -20,6 +20,8 @@ bmc_ll_node * bmc_ll_insert(bmc_ll *list, void *data, int size,  int position);
 int bmc_ll_find(bmc_ll *list, void *data);
 bmc_ll_node * bmc_ll_at(bmc_ll *list, int index);
 int bmc_ll_remove(bmc_ll *list, int index);
+bmc_ll_node *bmc_ll_remove_last(bmc_ll *);
+bmc_ll_node *bmc_ll_remove_first(bmc_ll *);
 void bmc_ll_free(bmc_ll *list);
 
 bmc_ll_node * bmc_ll_cycle(bmc_ll *list, int *index);
