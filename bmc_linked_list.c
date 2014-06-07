@@ -47,6 +47,24 @@ _cycle_exit:
 	return ret;
 }
 
+int bmc_ll_cycle2(bmc_ll *list) 
+{
+	bmc_ll_node *hare, *tortoise;
+
+	hare = tortoise = list->head;
+	while(hare && (hare = hare->next)) {
+		if(hare == tortoise) {
+			return 1;
+		}
+		hare = hare->next;
+		if(hare == tortoise) {
+			return 1;
+		}
+		tortoise = tortoise->next;
+	}
+
+	return 0;
+}
 
 bmc_ll_node * bmc_ll_insert(bmc_ll *list, void *data, int size, int position) {
 	/* Add at tail */

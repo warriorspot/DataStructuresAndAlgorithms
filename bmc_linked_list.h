@@ -23,6 +23,7 @@ int bmc_ll_remove(bmc_ll *list, int index);
 void bmc_ll_free(bmc_ll *list);
 
 bmc_ll_node * bmc_ll_cycle(bmc_ll *list, int *index);
+int bmc_ll_cycle2(bmc_ll *list);
 
 #endif
 
