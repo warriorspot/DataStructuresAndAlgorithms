@@ -21,6 +21,33 @@ bmc_ll_node * bmc_ll_add(bmc_ll *list, void *data, int size) {
 	return bmc_ll_insert(list, data, size, list->count);
 }
 
+bmc_ll_node * bmc_ll_cycle(bmc_ll *list, int *index) {
+	
+	bmc_ll_node ** next_array = malloc(sizeof(bmc_ll_node *) * list->count);
+	
+	bmc_ll_node *ret = NULL;
+	int ctr = 0;
+	bmc_ll_node *node = list->head;
+	while(node != NULL) {
+		next_array[ctr] = node;
+		
+		for(int i = 0; i <= ctr; i++) {
+			if(next_array[i] == node->next) {
+				ret = node;
+				if(index) *index = ctr;
+				goto _cycle_exit;
+			}		
+		}
+		node = node->next;
+		ctr++;
+	}
+	
+_cycle_exit:
+	free(next_array);
+	return ret;
+}
+
+
 bmc_ll_node * bmc_ll_insert(bmc_ll *list, void *data, int size, int position) {
 	/* Add at tail */
 	if(position >= list->count) {
