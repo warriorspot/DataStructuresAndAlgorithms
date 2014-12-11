@@ -31,6 +31,12 @@ bmc_hm * bmc_hm_create(int bucket_count)
 	return map;	
 }
 
+void bmc_hm_free(bmc_hm *map) 
+{
+	free(map->buckets);	
+	free(map);
+}
+
 void bmc_hm_set_hash(bmc_hm *map, int (*hash)(void *)) 
 {
 	map->hash = hash;	

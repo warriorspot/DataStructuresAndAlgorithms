@@ -8,6 +8,7 @@ typedef struct {
 } bmc_hm;
 
 bmc_hm * bmc_hm_create(int);
+void bmc_hm_free(bmc_hm *);
 void bmc_hm_set_hash(bmc_hm *, int (*hash)(void *));
 int bmc_hm_put(bmc_hm *, void *, void *);
 void * bmc_hm_get(bmc_hm *, void *);

@@ -26,6 +26,8 @@ int main(int argc, char **argv)
 	
 	printf("Value: %s\n", value);
 
+	bmc_hm_free(map);
+
 	return 0;
 }
 
